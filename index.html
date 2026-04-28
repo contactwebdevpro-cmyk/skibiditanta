@@ -5,66 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SkibidiTanta 🚽🍉</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Space+Grotesk:wght@400;700&family=Rubik+Mono+One&display=swap" rel="stylesheet">
-
-<!-- Firebase SDK via CDN compat (non-module, global scope) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script>
-  // Config injectée par build.js (Vercel env vars) ou fallback direct
-  var _env = (typeof window.__ENV__ !== 'undefined') ? window.__ENV__ : {};
-  var firebaseConfig = {
-    apiKey:            _env.VITE_FIREBASE_API_KEY            || "AIzaSyDo-vkOiAXZTINsaxx-2YOanli6PUe7Vqg",
-    authDomain:        _env.VITE_FIREBASE_AUTH_DOMAIN        || "skibididb-fd19b.firebaseapp.com",
-    projectId:         _env.VITE_FIREBASE_PROJECT_ID         || "skibididb-fd19b",
-    storageBucket:     _env.VITE_FIREBASE_STORAGE_BUCKET     || "skibididb-fd19b.firebasestorage.app",
-    messagingSenderId: _env.VITE_FIREBASE_MESSAGING_SENDER_ID|| "584260890482",
-    appId:             _env.VITE_FIREBASE_APP_ID             || "1:584260890482:web:ae6f5c7c10fbfe027437eb"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  var _db   = firebase.firestore();
-  var _auth = firebase.auth();
-
-  // Expose helpers identiques à l'ancienne API pour que le reste du code ne change pas
-  window._firebase = {
-    db:   _db,
-    auth: _auth,
-    collection:  function(db, name)       { return db.collection(name); },
-    addDoc:      function(ref, data)      { return ref.add(data); },
-    getDocs:     function(q)              { return q.get(); },
-    doc:         function(db, col, id)    { return db.collection(col).doc(id); },
-    updateDoc:   function(ref, data)      { return ref.update(data); },
-    increment:   firebase.firestore.FieldValue.increment.bind(firebase.firestore.FieldValue),
-    query:       function(ref)            { return ref; },
-    orderBy:     function(field, dir)     { return {field, dir}; },
-    onSnapshot:  function(q, cb)          { return q.onSnapshot(function(snap){ var docs = []; snap.forEach(function(d){ docs.push({id:d.id,...d.data()}); }); cb({docs:docs.map(function(d){return {id:d.id,data:function(){return d;}}})}); }); },
-    deleteDoc:   function(ref)            { return ref.delete(); },
-    getDoc:      function(ref)            { return ref.get().then(function(s){ return {data:function(){return s.data();},exists:s.exists}; }); },
-    setDoc:      function(ref, data)      { return ref.set(data); },
-    createUserWithEmailAndPassword: function(auth, e, p){ return _auth.createUserWithEmailAndPassword(e, p); },
-    signInWithEmailAndPassword:     function(auth, e, p){ return _auth.signInWithEmailAndPassword(e, p); },
-    signOut:     function(auth)           { return _auth.signOut(); },
-    onAuthStateChanged: function(auth, cb){ return _auth.onAuthStateChanged(cb); },
-    updateProfile: function(user, data)  { return user.updateProfile(data); }
-  };
-
-  // Auth state listener
-  _auth.onAuthStateChanged(function(user) {
-    window._currentUser = user;
-    if (user) {
-      document.getElementById('auth-modal').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-      document.getElementById('user-display-name').textContent = user.displayName || user.email.split('@')[0];
-      document.getElementById('user-avatar-nav').textContent = (user.displayName || user.email)[0].toUpperCase();
-      if (typeof loadFeed === 'function') loadFeed();
-    } else {
-      document.getElementById('auth-modal').style.display = 'flex';
-      document.getElementById('app').style.display = 'none';
-    }
-  });
-</script>
-
 <style>
 :root {
   --hot-pink: #FF006E;
@@ -741,7 +681,6 @@ nav {
 </style>
 </head>
 <body>
-
 <!-- MARQUEE -->
 <div class="marquee-bar">
   <span class="marquee-content">🚽 SKIBIDI TANTAFRUIT 🍉 LE RÉSEAU SOCIAL DU FUTUR 💀 OHIO RIZZ ONLY 🔥 W OR L? 🎭 GYATT ALERT 🚨 FANUM TAX ZONE ⚡ NPC BEHAVIOR DETECTED 🤖 SIGMA GRINDSET ACTIVATED 💪 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -963,6 +902,27 @@ nav {
 
 <!-- TOAST CONTAINER -->
 <div class="toast-container" id="toast-container"></div>
+
+<!-- Firebase SDK compat (chargé AVANT tout le reste) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<!-- Init Firebase -->
+<script>
+  var _env = (typeof window.__ENV__ !== 'undefined') ? window.__ENV__ : {};
+  var firebaseConfig = {
+    apiKey:            _env.VITE_FIREBASE_API_KEY             || "AIzaSyDo-vkOiAXZTINsaxx-2YOanli6PUe7Vqg",
+    authDomain:        _env.VITE_FIREBASE_AUTH_DOMAIN         || "skibididb-fd19b.firebaseapp.com",
+    projectId:         _env.VITE_FIREBASE_PROJECT_ID          || "skibididb-fd19b",
+    storageBucket:     _env.VITE_FIREBASE_STORAGE_BUCKET      || "skibididb-fd19b.firebasestorage.app",
+    messagingSenderId: _env.VITE_FIREBASE_MESSAGING_SENDER_ID || "584260890482",
+    appId:             _env.VITE_FIREBASE_APP_ID              || "1:584260890482:web:ae6f5c7c10fbfe027437eb"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var _db   = firebase.firestore();
+  var _auth = firebase.auth();
+</script>
 
 <script>
 // ==================== STATE ====================
@@ -1471,5 +1431,23 @@ setTimeout(() => {
   }
 }, 500);
 </script>
+
+<!-- Auth listener (après que toutes les fonctions soient définies) -->
+<script>
+  _auth.onAuthStateChanged(function(user) {
+    window._currentUser = user;
+    if (user) {
+      document.getElementById('auth-modal').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      document.getElementById('user-display-name').textContent = user.displayName || user.email.split('@')[0];
+      document.getElementById('user-avatar-nav').textContent = (user.displayName || user.email)[0].toUpperCase();
+      loadFeed();
+    } else {
+      document.getElementById('auth-modal').style.display = 'flex';
+      document.getElementById('app').style.display = 'none';
+    }
+  });
+</script>
+
 </body>
 </html>
