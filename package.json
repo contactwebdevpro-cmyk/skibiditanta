@@ -1,0 +1,12 @@
+{
+  "name": "skibidi-tantafruit",
+  "version": "1.0.0",
+  "description": "Le réseau social le plus brainrot du net 🚽🍉",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js && npx serve dist"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
